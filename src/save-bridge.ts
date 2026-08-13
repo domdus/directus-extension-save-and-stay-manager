@@ -287,9 +287,11 @@ function annotateSaveButton(tooltip: string) {
 	const btn = findPrimarySaveButton();
 	if (!btn) return;
 
-	btn.setAttribute(HIJACK_FLAG, '1');
-	btn.setAttribute('title', tooltip);
-	btn.setAttribute('aria-label', tooltip);
+	// Only write when needed — setting title/aria-label while observing those
+	// attributes caused a MutationObserver feedback loop (browser freeze on item pages).
+	if (btn.getAttribute(HIJACK_FLAG) !== '1') btn.setAttribute(HIJACK_FLAG, '1');
+	if (btn.getAttribute('title') !== tooltip) btn.setAttribute('title', tooltip);
+	if (btn.getAttribute('aria-label') !== tooltip) btn.setAttribute('aria-label', tooltip);
 }
 
 /**
@@ -302,6 +304,7 @@ export function installHeaderSaveHijack(options?: {
 }): () => void {
 	const tooltip = options?.tooltip ?? 'Save and Stay';
 	let inflight = false;
+	let annotateScheduled = false;
 
 	const onClickCapture = async (event: Event) => {
 		if (!isEventOnPrimarySave(event)) return;
@@ -322,22 +325,30 @@ export function installHeaderSaveHijack(options?: {
 		}
 	};
 
+	const scheduleAnnotate = () => {
+		if (annotateScheduled) return;
+		annotateScheduled = true;
+		queueMicrotask(() => {
+			annotateScheduled = false;
+			annotateSaveButton(tooltip);
+		});
+	};
+
 	document.addEventListener('click', onClickCapture, true);
 
 	annotateSaveButton(tooltip);
 
 	const actions = findHeaderActions();
+	// Watch remounts only — do not observe title/aria-label (we write those ourselves).
 	const observer = actions
 		? new MutationObserver(() => {
-				annotateSaveButton(tooltip);
+				scheduleAnnotate();
 			})
 		: null;
 
 	observer?.observe(actions!, {
 		subtree: true,
 		childList: true,
-		attributes: true,
-		attributeFilter: ['title', 'aria-label', 'disabled'],
 	});
 
 	return () => {
