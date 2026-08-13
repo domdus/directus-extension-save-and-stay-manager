@@ -1,6 +1,16 @@
 # Save and Stay Manager
 
-Directus Studio extension that makes the **header Save** button run **Save and Stay** for selected collections, roles, and policies.
+Make the **header Save** button keep editors on the item page (**Save and Stay**) — for the collections and people you choose, not for everyone at once.
+
+Open **Save and Stay** from the module bar (admins). Add rules for collections and optional roles or policies. Unmatched cases keep the normal **Save and Quit** behavior.
+
+## Why
+
+Editors often want **Save and Stay** as the default instead of leaving the item after every save. That request has been discussed in Directus for years ([discussion #4081](https://github.com/directus/directus/discussions/4081)), and community extensions mostly solve it as a **field interface**: you drop a special field onto each collection’s form.
+
+That works for one or two models — not when you have dozens or a hundred collections. You would have to add (and maintain) the same presentation field on every form. It also does not give you **rules per role or policy** (for example: editors Stay on articles, but admins still Quit).
+
+This extension keeps configuration in **one place**: pick collections and who the rule applies to. No fields to add to each collection model. And unlike the global project setting (below), you can still target **roles and policies**.
 
 ## Directus 12.2+ global setting
 
@@ -12,18 +22,6 @@ Use this extension when you need **selective** Stay (collections × roles/polici
 2. Add rules here for who/what should Stay instead.
 
 If the project default is already Stay, matching rules are a no-op (primary Save already stays; the Stay menu item is hidden).
-
-## Extension type
-
-**Bundle**
-
-| Entry | Role |
-|-------|------|
-| Module | Rules + settings UI (admins) |
-| Hook | Ensures `directus_settings.save_and_stay` exists |
-| App enforcer | Hijacks header Save → native Save and Stay when a rule matches |
-
-Supports **v11** (`more_vert` menu) and **v12** (split-menu chevron). No presentation fields required.
 
 ## Install
 
@@ -46,11 +44,13 @@ Matching: **OR across rules**. Within a rule, audience is OR (any listed role or
 
 ## How it works
 
-Directus does not expose `saveAndStay()` to extensions. The enforcer captures the primary header Save click and triggers the native **Save and Stay** menu action (validation, relations, versions preserved). The split / `…` menu still offers other save actions.
+When a rule matches, clicking the header **Save** button runs Directus’s own **Save and Stay** action (validation, relations, and versions stay intact). The save menu (⋯ / chevron) still offers the other save options. No extra fields on your collections.
+
+Works on Directus **v11** and **v12**.
 
 ## Uninstall
 
-Use **Settings → Remove extension data** in the module (or delete `directus_settings.save_and_stay`), then remove the extension package.
+Use **Settings → Remove extension data** in the module (or delete the dedicated project setting this extension stores), then remove the extension package.
 
 ## License
 
