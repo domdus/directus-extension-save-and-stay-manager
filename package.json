@@ -1,0 +1,63 @@
+{
+	"name": "directus-extension-save-and-stay-manager",
+	"description": "Make header Save stay on the item page for selected collections, roles, and policies (v11 + v12; complements 12.2 global default)",
+	"icon": "save",
+	"version": "1.1.0",
+	"license": "MIT",
+	"keywords": [
+		"directus",
+		"directus-extension",
+		"directus-extension-bundle",
+		"save-and-stay",
+		"save-and-stay-manager",
+		"default-save",
+		"roles",
+		"policies"
+	],
+	"type": "module",
+	"files": [
+		"dist",
+		"LICENSE",
+		"README.md"
+	],
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/domdus/directus-extension-save-and-stay-manager.git"
+	},
+	"bugs": {
+		"url": "https://github.com/domdus/directus-extension-save-and-stay-manager/issues"
+	},
+	"homepage": "https://github.com/domdus/directus-extension-save-and-stay-manager#readme",
+	"directus:extension": {
+		"type": "bundle",
+		"path": {
+			"app": "dist/app.js",
+			"api": "dist/api.js"
+		},
+		"entries": [
+			{
+				"type": "module",
+				"name": "save-and-stay-manager-module",
+				"source": "src/module/index.ts"
+			},
+			{
+				"type": "hook",
+				"name": "save-and-stay-manager-hook",
+				"source": "src/hook/index.ts"
+			}
+		],
+		"host": ">=9.26.0 <13.0.0"
+	},
+	"scripts": {
+		"build": "directus-extension build",
+		"dev": "directus-extension build -w --no-minify",
+		"link": "directus-extension link",
+		"add": "directus-extension add"
+	},
+	"devDependencies": {
+		"@directus/extensions-sdk": "^17.0.0",
+		"@directus/types": "^13.0.0",
+		"typescript": "^5.0.0",
+		"vue": "^3.3.7"
+	}
+}
