@@ -124,9 +124,53 @@ export function useSaveAndStayManager() {
 		}
 	}
 
+	/** Create the settings JSON field via Studio API if missing (replaces the old server hook). */
+	async function ensureSettingsField() {
+		if (!userHasAdminAccess(userStore.currentUser)) return;
+
+		try {
+			await api.get(`/fields/directus_settings/${SAVE_AND_STAY_FIELD}`);
+			return;
+		} catch {
+			// missing — create below
+		}
+
+		try {
+			await api.post(`/fields/directus_settings`, {
+				field: SAVE_AND_STAY_FIELD,
+				type: 'json',
+				meta: {
+					collection: 'directus_settings',
+					field: SAVE_AND_STAY_FIELD,
+					special: ['cast-json'],
+					interface: 'input-code',
+					hidden: true,
+					readonly: false,
+					width: 'full',
+					note: 'Managed by Save and Stay Manager. Do not edit manually.',
+				},
+				schema: {
+					default_value: JSON.stringify(EMPTY_SAVE_AND_STAY),
+				},
+			});
+
+			try {
+				await settingsStore.hydrate?.();
+			} catch {
+				// ignore
+			}
+		} catch (error: any) {
+			const message = String(error?.response?.data?.errors?.[0]?.message || error?.message || error || '');
+			if (/already exists|duplicate/i.test(message)) return;
+			throw error;
+		}
+	}
+
 	async function load() {
 		loading.value = true;
 		try {
+			await ensureSettingsField();
+
 			const response = await api.get('/settings', {
 				params: {
 					limit: 1,
@@ -288,6 +332,7 @@ export function useSaveAndStayManager() {
 
 			config.value = cloneDeep(EMPTY_SAVE_AND_STAY);
 			initialConfig.value = cloneDeep(EMPTY_SAVE_AND_STAY);
+			loadPromise = null;
 
 			try {
 				await settingsStore.hydrate?.();

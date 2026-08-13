@@ -9,6 +9,7 @@
  */
 
 const HEADER_ACTIONS_SELECTORS = [
+	'#app header.header-bar .actions',
 	'#app header .actions',
 	'#app .private-view header .actions',
 	'#app .actions',
@@ -62,27 +63,64 @@ function isSplitMenuControl(el: HTMLElement): boolean {
 	return icon === 'keyboard_arrow_down' || icon === 'arrow_drop_down';
 }
 
+/** Save icon OR localized Save label (v12 header often hides the icon and shows text). */
+function looksLikeSaveControl(el: HTMLElement): boolean {
+	if (el.querySelector('[data-icon="check"], [data-icon="beenhere"]')) return true;
+	if (el.getAttribute('data-icon') === 'check' || el.getAttribute('data-icon') === 'beenhere') return true;
+
+	// Versioning primary is Publish — never treat as Save
+	if (el.querySelector('[data-icon="public"]') || el.getAttribute('data-icon') === 'public') return false;
+
+	const text = (el.textContent ?? '').replace(/\s+/g, ' ').trim();
+	if (!text) return false;
+
+	return (
+		/^save$/i.test(text) ||
+		/^speichern$/i.test(text) ||
+		/^enregistrer$/i.test(text) ||
+		/^guardar$/i.test(text) ||
+		/^opslaan$/i.test(text) ||
+		/^salvar$/i.test(text) ||
+		/^salva$/i.test(text)
+	);
+}
+
+function mainButtonInVButton(host: HTMLElement): HTMLElement | null {
+	const candidates = [...host.querySelectorAll<HTMLElement>('button, a')].filter((el) => {
+		if (isSplitMenuControl(el)) return false;
+		if (el.classList.contains('split-menu-button')) return false;
+		return el.classList.contains('button') || el.closest('.v-button') === host;
+	});
+	return candidates[0] ?? null;
+}
+
 export function findPrimarySaveButton(): HTMLElement | null {
 	const actions = findHeaderActions();
 	if (!actions) return null;
 
-	const byClass = actions.querySelector<HTMLElement>('.action-save, button.action-save, .header-button');
-	if (byClass && !isSplitMenuControl(byClass) && byClass.querySelector('[data-icon="check"], [data-icon="beenhere"]')) {
+	// Prefer primary slot (v12 header-bar: .actions > .primary)
+	const primaryScope = (actions.querySelector('.primary') as HTMLElement | null) || actions;
+
+	// v12: Save is a VButton with #split-menu → sibling .split-menu-button (chevron).
+	// On wider viewports the check icon is often replaced by the "Save" label — match either.
+	const splitActivators = [...primaryScope.querySelectorAll<HTMLElement>('.split-menu-button')];
+	for (const split of splitActivators) {
+		const host = split.closest('.v-button') as HTMLElement | null;
+		if (!host) continue;
+		const main = mainButtonInVButton(host);
+		if (main && looksLikeSaveControl(main)) return main;
+	}
+
+	const byClass = primaryScope.querySelector<HTMLElement>('.action-save, button.action-save');
+	if (byClass && !isSplitMenuControl(byClass) && looksLikeSaveControl(byClass)) {
 		return byClass;
 	}
 
-	// Prefer primary slot (v12 header bar)
-	const primaryScope = actions.querySelector('.primary') || actions;
-
-	const candidates = [...primaryScope.querySelectorAll<HTMLElement>('button')].filter((btn) => {
+	const candidates = [...primaryScope.querySelectorAll<HTMLElement>('button, a.button')].filter((btn) => {
 		if (isSplitMenuControl(btn)) return false;
-		if (btn.disabled || btn.getAttribute('aria-disabled') === 'true') {
-			/* still a candidate — may be disabled when no edits */
-		}
-		return Boolean(btn.querySelector('[data-icon="check"], [data-icon="beenhere"]'));
+		return looksLikeSaveControl(btn);
 	});
 
-	// Last check button in primary area is usually Save (archive/etc. may precede it)
 	return candidates.at(-1) ?? null;
 }
 

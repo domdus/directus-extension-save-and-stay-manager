@@ -7,7 +7,7 @@
 	"keywords": [
 		"directus",
 		"directus-extension",
-		"directus-extension-bundle",
+		"directus-extension-module",
 		"save-and-stay",
 		"save-and-stay-manager",
 		"default-save",
@@ -31,23 +31,9 @@
 	},
 	"homepage": "https://github.com/domdus/directus-extension-save-and-stay-manager#readme",
 	"directus:extension": {
-		"type": "bundle",
-		"path": {
-			"app": "dist/app.js",
-			"api": "dist/api.js"
-		},
-		"entries": [
-			{
-				"type": "module",
-				"name": "save-and-stay-manager-module",
-				"source": "src/module/index.ts"
-			},
-			{
-				"type": "hook",
-				"name": "save-and-stay-manager-hook",
-				"source": "src/hook/index.ts"
-			}
-		],
+		"type": "module",
+		"path": "dist/index.js",
+		"source": "src/module/index.ts",
 		"host": ">=9.26.0 <13.0.0"
 	},
 	"scripts": {

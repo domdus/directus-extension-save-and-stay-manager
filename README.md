@@ -23,16 +23,43 @@ Use this extension when you need **selective** Stay (collections × roles/polici
 
 If the project default is already Stay, matching rules are a no-op (primary Save already stays; the Stay menu item is hidden).
 
-## Install
+## Installation
+
+Supports **Directus 9.26+ through 12.x**.
+
+### npm
 
 ```bash
+npm install directus-extension-save-and-stay-manager
+```
+
+Place the package in your Directus `extensions` folder (or install into a project that loads extensions from `node_modules`), then restart Directus.
+
+### Marketplace
+
+Search for **Save and Stay Manager** in **Settings → Marketplace**. This is an **App** module (no server hook), so it installs under the default Marketplace trust settings — including Directus Cloud and self-hosted without `MARKETPLACE_TRUST=all`.
+
+Opening the module as an admin creates the project settings field automatically if it is missing.
+
+### Manual installation
+
+1. Install and build:
+
+```bash
+cd directus-extension-save-and-stay-manager
 npm install
 npm run build
 ```
 
-Copy into your Directus `extensions/` folder (or npm-install there), restart Directus.
+2. Copy the built package into your Directus `extensions` folder (include `package.json` and the `dist` folder).
 
-Enable **Save and Stay** under **Settings → Project Settings → Modules** if it is not visible.
+3. Restart Directus.
+
+4. In the Data Studio:
+
+   1. Open **Settings → Project Settings → Modules**  
+   2. Enable **Save and Stay**  
+   3. Open **Save and Stay** from the left bar
 
 ## Configure
 
@@ -44,9 +71,7 @@ Matching: **OR across rules**. Within a rule, audience is OR (any listed role or
 
 ## How it works
 
-When a rule matches, clicking the header **Save** button runs Directus’s own **Save and Stay** action (validation, relations, and versions stay intact). The save menu (⋯ / chevron) still offers the other save options. No extra fields on your collections.
-
-Works on Directus **v11** and **v12**.
+When a rule matches, clicking the header **Save** button runs Directus’s own **Save and Stay** action (validation, relations, and versions stay intact). The save menu (⋯ / chevron) still offers the other save options. No fields to add on your content collections — rules live in project settings, created the first time an admin opens this module.
 
 ## Uninstall
 
