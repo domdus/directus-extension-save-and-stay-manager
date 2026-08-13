@@ -49,10 +49,8 @@
 					>
 						<v-icon class="icon" name="save" />
 						<div class="info">
-							<div class="name">
-								{{ ruleTitle(rule) }}
-								<v-chip x-small class="rule-chip">{{ ruleSummary(rule) }}</v-chip>
-							</div>
+							<div class="name">{{ ruleTitle(rule) }}</div>
+							<div class="meta">{{ ruleSummary(rule) }}</div>
 						</div>
 						<div class="row-actions" @click.stop>
 							<v-button v-tooltip="'Edit'" icon x-small secondary @click="openRuleEditor(rule.id)">
@@ -208,7 +206,7 @@ onMounted(() => {
 .list {
 	display: flex;
 	flex-direction: column;
-	gap: 8px;
+	gap: 4px;
 }
 
 .rule-row {
@@ -219,6 +217,7 @@ onMounted(() => {
 
 .icon {
 	flex-shrink: 0;
+	margin: 0 0.6875rem;
 }
 
 .info {
@@ -227,20 +226,19 @@ onMounted(() => {
 }
 
 .name {
-	display: flex;
-	flex-wrap: wrap;
-	align-items: center;
-	gap: 8px;
 	font-weight: 600;
 }
 
-.rule-chip {
-	font-weight: 500;
+.meta {
+	font-size: 12px;
+	color: var(--theme--foreground-subdued, var(--foreground-subdued, #a2b5cd));
 }
 
 .row-actions {
 	display: flex;
-	gap: 4px;
+	align-items: center;
+	gap: 8px;
+	flex-shrink: 0;
 }
 
 .add-link {
