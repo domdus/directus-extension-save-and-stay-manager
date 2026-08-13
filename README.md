@@ -2,7 +2,7 @@
 
 Make the **header Save** button keep editors on the item page (**Save and Stay**) — for the collections and people you choose, not for everyone at once.
 
-<img alt="Save and Stay Manager — rules list" src="docs/save-and-stay-manager.png" width="800" />
+<img alt="Save and Stay Manager — rules list" src="https://raw.githubusercontent.com/domdus/directus-extension-save-and-stay-manager/main/docs/save-and-stay-manager.png" width="800" />
 
 Open **Save and Stay** from the module bar (admins). Add rules for collections and optional roles or policies. Unmatched cases keep the normal **Save and Quit** behavior.
 
