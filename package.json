@@ -2,7 +2,7 @@
 	"name": "directus-extension-save-and-stay-manager",
 	"description": "Make header Save stay on the item page for selected collections, roles, and policies (v11 + v12; complements 12.2 global default)",
 	"icon": "save",
-	"version": "1.1.0",
+	"version": "1.1.1",
 	"license": "MIT",
 	"keywords": [
 		"directus",
