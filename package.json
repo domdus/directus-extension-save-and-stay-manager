@@ -2,7 +2,7 @@
 	"name": "directus-extension-save-and-stay-manager",
 	"description": "Configure the save button behavior on the item detail page for selected collections, roles, and policies",
 	"icon": "save",
-	"version": "1.1.8",
+	"version": "1.1.9",
 	"license": "MIT",
 	"keywords": [
 		"directus",
