@@ -30,6 +30,15 @@
 			</div>
 
 			<template v-else>
+				<v-divider
+					class="section-divider"
+					large
+					:style="{ '--v-divider-color': 'var(--theme--border-color-subdued)' }"
+				>
+					<template #icon><v-icon name="save" /></template>
+					Rules
+				</v-divider>
+
 				<p class="page-intro">
 					Add rules for the collections (and optional roles/policies) that should stay on the item after
 					Save. Unlisted combinations keep the default Save and Quit behavior.
@@ -177,25 +186,28 @@ onMounted(() => {
 <style scoped>
 .page {
 	padding: var(--content-padding);
-	padding-top: calc(var(--content-padding) / 2);
-	max-width: 840px;
-	width: 100%;
+	padding-block-end: var(--content-padding-bottom);
+	max-width: 720px;
 }
 
 .page--flush-top {
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .loading {
 	display: flex;
 	justify-content: center;
-	padding: 40px 0;
+	padding: 48px 0;
+}
+
+.section-divider {
+	margin-bottom: 12px;
 }
 
 .page-intro {
-	margin: 0 0 20px;
-	color: var(--theme--foreground-subdued);
-	line-height: 1.45;
+	margin: 0 0 24px;
+	line-height: 1.55;
+	color: var(--theme--foreground);
 }
 
 .empty {
@@ -280,7 +292,8 @@ onMounted(() => {
 
 
 .sidebar-text {
-	margin: 0;
-	line-height: 1.45;
+	margin: 0 0 16px;
+	line-height: 1.55;
+	color: var(--theme--foreground);
 }
 </style>

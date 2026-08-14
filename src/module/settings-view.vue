@@ -152,28 +152,37 @@ async function runCleanup() {
 <style scoped>
 .page {
 	padding: var(--content-padding);
-	padding-top: calc(var(--content-padding) / 2);
-	max-width: 840px;
-	width: 100%;
+	padding-block-end: var(--content-padding-bottom);
+	max-width: 720px;
 }
 
 .page--flush-top {
-	padding-top: 0;
+	padding-block-start: 0;
 }
 
 .page-intro,
 .explain {
 	margin: 0 0 16px;
-	color: var(--theme--foreground-subdued);
-	line-height: 1.45;
+	line-height: 1.55;
+	color: var(--theme--foreground);
+}
+
+.page-intro {
+	margin-bottom: 24px;
+}
+
+.page-intro code,
+.explain code {
+	font-family: var(--theme--fonts--monospace--font-family, monospace);
+	font-size: 0.9em;
 }
 
 .section-divider {
-	margin: 8px 0 16px;
+	margin-bottom: 12px;
 }
 
-.add-margin-top {
-	margin-top: 32px;
+.section-divider.add-margin-top {
+	margin-top: 40px;
 }
 
 .actions {
@@ -193,7 +202,8 @@ async function runCleanup() {
 }
 
 .sidebar-text {
-	margin: 0;
-	line-height: 1.45;
+	margin: 0 0 16px;
+	line-height: 1.55;
+	color: var(--theme--foreground);
 }
 </style>
