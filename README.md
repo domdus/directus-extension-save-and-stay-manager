@@ -16,7 +16,7 @@ This extension keeps configuration in **one place**: pick collections and who th
 
 ## Directus 12.2+ global setting
 
-From **12.2.0**, Directus has a project **Default Save Action** (`save-and-quit` | `save-and-stay` | `save-and-create-new`). That is **global only** — not per collection or role.
+From **12.2.0**, Directus finally has a project **Default Save Action** (`save-and-quit` | `save-and-stay` | `save-and-create-new`). That is **global only** — not per collection or role.
 
 Use this extension when you need **selective** Stay (collections × roles/policies):
 
@@ -39,9 +39,7 @@ Place the package in your Directus `extensions` folder (or install into a projec
 
 ### Marketplace
 
-Search for **Save and Stay Manager** in **Settings → Marketplace**. This is an **App** module (no server hook), so it installs under the default Marketplace trust settings — including Directus Cloud and self-hosted without `MARKETPLACE_TRUST=all`.
-
-Opening the module as an admin creates the project settings field automatically if it is missing.
+Search for **Save and Stay Manager** in **Settings → Marketplace**.
 
 ### Manual installation
 
@@ -73,7 +71,7 @@ Matching: **OR across rules**. Within a rule, audience is OR (any listed role or
 
 ## How it works
 
-When a rule matches, clicking the header **Save** button runs Directus’s own **Save and Stay** action (validation, relations, and versions stay intact). The save menu (⋯ / chevron) still offers the other save options. No fields to add on your content collections — rules live in project settings, created the first time an admin opens this module.
+When a rule matches, clicking the header **Save** button runs Directus’s own **Save and Stay** action (validation, relations, and versions stay intact). The save menu (⋯ / chevron) still offers the other save options. No extra fields on your collections.
 
 ## Uninstall
 
