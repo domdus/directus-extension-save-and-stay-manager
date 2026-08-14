@@ -77,8 +77,6 @@ When you are on an item page and a rule matches your collection and role or poli
 
 The chevron or ⋯ menu is left alone, so **Save and Quit** and other options still work from there. The hijack turns off when no rule matches, when a dialog is open, when Save is disabled, or on Directus 12.2+ when the project default is already **Save and Stay**. Because this relies on Studio DOM structure rather than a public API, it is version-aware and may need updates if Directus changes the header layout.
 
-No extra fields on your collections — rules live in project settings.
-
 ## Uninstall
 
 Use **Settings → Remove extension data** in the module (or delete the dedicated project setting this extension stores), then remove the extension package.
