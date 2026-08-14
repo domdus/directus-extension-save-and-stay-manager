@@ -71,7 +71,13 @@ Matching: **OR across rules**. Within a rule, audience is OR (any listed role or
 
 ## How it works
 
-When a rule matches, clicking the header **Save** button runs Directus’s own **Save and Stay** action (validation, relations, and versions stay intact). The save menu (⋯ / chevron) still offers the other save options. No extra fields on your collections.
+Directus does not expose item save handlers to extensions, so this module works through the Studio UI — like a user would.
+
+When you are on an item page and a rule matches your collection and role or policy, it finds the header **Save** button (by icon, label, or layout; Directus changed this between v11 and v12) and intercepts the click before the default **Save and Quit** handler runs. Instead, it opens the save dropdown (the chevron or ⋯ menu next to Save), selects **Save and Stay** (including translated labels), and clicks that. Validation, relations, and versions stay on Directus’s native path — only the target action changes.
+
+The chevron or ⋯ menu is left alone, so **Save and Quit** and other options still work from there. The hijack turns off when no rule matches, when a dialog is open, when Save is disabled, or on Directus 12.2+ when the project default is already **Save and Stay**. Because this relies on Studio DOM structure rather than a public API, it is version-aware and may need updates if Directus changes the header layout.
+
+No extra fields on your collections — rules live in project settings.
 
 ## Uninstall
 
