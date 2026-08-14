@@ -15,7 +15,7 @@
 		</template>
 
 		<template #sidebar>
-			<sidebar-detail icon="info" title="About" close>
+			<sidebar-detail id="about" icon="info" title="About">
 				<p class="sidebar-text">
 					Rules make the header Save button run <strong>Save and Stay</strong> instead of leaving the item
 					page. Match is OR across rules. Within a rule: empty collections = all collections; empty roles and
