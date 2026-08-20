@@ -33,6 +33,15 @@
 			<div class="actions">
 				<v-button secondary :loading="checkingUpdates" @click="checkUpdates">Check now</v-button>
 			</div>
+			<p class="links">
+				<a :href="EXTENSION_NPM_URL" target="_blank" rel="noopener noreferrer">npm</a>
+				·
+				<a :href="EXTENSION_GITHUB_URL" target="_blank" rel="noopener noreferrer">GitHub</a>
+				<template v-if="marketplaceUrl">
+					·
+					<a :href="marketplaceUrl">Marketplace</a>
+				</template>
+			</p>
 			<div v-if="updateInfo" class="result">
 				<v-notice :type="updateNoticeType">
 					Current: <strong>{{ updateInfo.current_version }}</strong>
@@ -43,21 +52,7 @@
 					<template v-else-if="updateInfo.has_update"> · Update available</template>
 					<template v-else> · Up to date</template>
 				</v-notice>
-				<p class="links">
-					<a :href="updateInfo.links.npm" target="_blank" rel="noopener noreferrer">npm</a>
-					·
-					<a :href="updateInfo.links.github" target="_blank" rel="noopener noreferrer">GitHub</a>
-					<template v-if="updateInfo.links.marketplace">
-						·
-						<a :href="updateInfo.links.marketplace">Marketplace</a>
-					</template>
-				</p>
 			</div>
-
-			<p class="page-intro">
-				Back up or restore rules as JSON, or remove the dedicated
-				<code>{{ SAVE_AND_STAY_FIELD }}</code> settings field before uninstalling.
-			</p>
 
 			<v-divider
 				class="section-divider"
@@ -68,6 +63,10 @@
 				<template #icon><v-icon name="import_export" /></template>
 				Export / Import
 			</v-divider>
+			<p class="explain">
+				Back up or restore rules as JSON, or remove the dedicated
+				<code>{{ SAVE_AND_STAY_FIELD }}</code> settings field before uninstalling.
+			</p>
 
 			<div class="actions">
 				<v-button secondary :disabled="loading || cleaning" @click="exportConfig">Export JSON</v-button>
@@ -137,6 +136,11 @@ import {
 
 const api = useApi();
 const pageClass = usePageClass();
+const marketplaceUrl = computed(() =>
+	EXTENSION_MARKETPLACE_UID
+		? `/admin/settings/marketplace/extension/${EXTENSION_MARKETPLACE_UID}`
+		: null,
+);
 const fileInput = ref<HTMLInputElement | null>(null);
 const importing = ref(false);
 const importMessage = ref<{ type: 'success' | 'danger'; text: string } | null>(null);
@@ -220,9 +224,7 @@ function compareSemver(a: string, b: string): number {
 
 async function checkUpdates() {
 	checkingUpdates.value = true;
-	const marketplace = EXTENSION_MARKETPLACE_UID
-		? `/admin/settings/marketplace/extension/${EXTENSION_MARKETPLACE_UID}`
-		: null;
+	const marketplace = marketplaceUrl.value;
 	const current = normalizeVersion(await readInstalledVersion());
 	try {
 		const res = await fetch(`https://registry.npmjs.org/${encodeURIComponent(EXTENSION_PACKAGE_NAME)}`, {
@@ -304,18 +306,12 @@ async function runCleanup() {
 	padding-block-start: 0;
 }
 
-.page-intro,
 .explain {
 	margin: 0 0 16px;
 	line-height: 1.55;
 	color: var(--theme--foreground);
 }
 
-.page-intro {
-	margin-bottom: 24px;
-}
-
-.page-intro code,
 .explain code {
 	font-family: var(--theme--fonts--monospace--font-family, monospace);
 	font-size: 0.9em;
