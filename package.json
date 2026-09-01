@@ -43,6 +43,11 @@
 				"source": "src/module/index.ts"
 			},
 			{
+				"type": "endpoint",
+				"name": "save-and-stay-manager-endpoint",
+				"source": "src/endpoint/index.ts"
+			},
+			{
 				"type": "hook",
 				"name": "save-and-stay-manager-hook",
 				"source": "src/hook/index.ts"

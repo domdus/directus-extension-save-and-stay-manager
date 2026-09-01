@@ -166,27 +166,67 @@ export function useSaveAndStayManager() {
 		}
 	}
 
-	async function load() {
-		loading.value = true;
+	async function loadConfigRow(): Promise<Record<string, any>> {
 		try {
-			await ensureSettingsField();
+			const response = await api.get('/save-and-stay-manager/config');
+			const data = response.data?.data;
+			if (data && typeof data === 'object') return data;
+		} catch {
+			// Endpoint missing on an older bundle — fall through to /settings.
+		}
 
+		try {
 			const response = await api.get('/settings', {
 				params: {
 					limit: 1,
 					fields: [SAVE_AND_STAY_FIELD],
 				},
 			});
-
 			const data = response.data?.data;
-			const row = Array.isArray(data) ? data[0] : data;
+			return (Array.isArray(data) ? data[0] : data) || {};
+		} catch {
+			// Custom settings fields may be forbidden or deleted.
+			return {};
+		}
+	}
+
+	async function persistConfig(payload: Record<string, unknown>) {
+		try {
+			await api.patch('/save-and-stay-manager/config', payload);
+			return;
+		} catch {
+			// Older bundle without /config — use settings API.
+		}
+
+		await api.patch('/settings', payload);
+	}
+
+	async function load() {
+		loading.value = true;
+		try {
+			await ensureSettingsField();
+
+			const row = await loadConfigRow();
 			const next = normalizeConfig(row?.[SAVE_AND_STAY_FIELD]);
 
 			config.value = next;
 			initialConfig.value = cloneDeep(next);
+		} catch {
+			config.value = cloneDeep(EMPTY_SAVE_AND_STAY);
+			initialConfig.value = cloneDeep(EMPTY_SAVE_AND_STAY);
+		}
 
+		try {
 			await loadRolesAndPolicies();
+		} catch {
+			roleOptions.value = [];
+			policyOptions.value = [];
+		}
+
+		try {
 			await loadCollectionCatalog();
+		} catch {
+			collectionOptions.value = [];
 		} finally {
 			loading.value = false;
 		}
@@ -211,7 +251,7 @@ export function useSaveAndStayManager() {
 				[SAVE_AND_STAY_FIELD]: serializeConfig(config.value),
 			};
 
-			await api.patch('/settings', payload);
+			await persistConfig(payload);
 
 			try {
 				await settingsStore.hydrate?.();
@@ -315,7 +355,7 @@ export function useSaveAndStayManager() {
 
 		try {
 			try {
-				await api.patch('/settings', {
+				await persistConfig({
 					[SAVE_AND_STAY_FIELD]: null,
 				});
 				clearedValue = true;

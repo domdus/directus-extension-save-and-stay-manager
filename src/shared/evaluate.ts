@@ -6,9 +6,20 @@ function asStringArray(value: unknown): string[] {
 }
 
 export function normalizeConfig(raw: unknown): SaveAndStayConfig {
-	if (!raw || typeof raw !== 'object') return { ...EMPTY_SAVE_AND_STAY, rules: [] };
+	const parsed = typeof raw === 'string' ? (() => {
+		const trimmed = raw.trim();
+		if (!trimmed) return null;
+		if (trimmed[0] !== '{' && trimmed[0] !== '[') return raw;
+		try {
+			return JSON.parse(trimmed);
+		} catch {
+			return raw;
+		}
+	})() : raw;
 
-	const record = raw as Record<string, unknown>;
+	if (!parsed || typeof parsed !== 'object') return { ...EMPTY_SAVE_AND_STAY, rules: [] };
+
+	const record = parsed as Record<string, unknown>;
 	const rulesIn = Array.isArray(record.rules) ? record.rules : [];
 
 	const rules: SaveAndStayRule[] = rulesIn
