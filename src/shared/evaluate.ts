@@ -23,7 +23,7 @@ export function normalizeConfig(raw: unknown): SaveAndStayConfig {
 	const rulesIn = Array.isArray(record.rules) ? record.rules : [];
 
 	const rules: SaveAndStayRule[] = rulesIn
-		.map((entry) => {
+		.map((entry): SaveAndStayRule | null => {
 			if (!entry || typeof entry !== 'object') return null;
 			const row = entry as Record<string, unknown>;
 			const id = String(row.id ?? '').trim();
